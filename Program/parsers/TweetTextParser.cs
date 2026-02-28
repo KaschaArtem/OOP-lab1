@@ -26,6 +26,7 @@ public class TweetTextParser {
 
     public double GetWeight(string text) {
         double totalWeight = 0.0;
+        int count = 0;
 
         text = text.ToLowerInvariant();
         var tokens = Regex.Matches(text, @"\b[\w\-]+\b");
@@ -42,17 +43,23 @@ public class TweetTextParser {
 
             if (three != String.Empty && sentiments.TryGetValue(three, out double weight3)) {
                 totalWeight += weight3;
+                count++;
                 i += 2;
             }
             else if (two != String.Empty && sentiments.TryGetValue(two, out double weight2)) {
                 totalWeight += weight2;
+                count++;
                 i += 1;
             }
             else if (sentiments.TryGetValue(one, out double weight1)) {
                 totalWeight += weight1;
+                count++;
             }
         }
 
-        return totalWeight;
+        if (count == 0)
+            count = 1;
+
+        return totalWeight / count;
     }
 }
