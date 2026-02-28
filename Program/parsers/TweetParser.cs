@@ -4,13 +4,13 @@ public class TweetParser {
 
     private string DataPath = String.Empty;
 
-    private string StatesFile = String.Empty;
+    private StateParser stateParser;
     private TweetTextParser tweetTextParser;
 
     public TweetParser(string dataPath) {
         DataPath = dataPath;
 
-        StatesFile = Path.Combine(dataPath, "States.json");
+        stateParser = new StateParser(Path.Combine(dataPath, "states.json"));
         tweetTextParser = new TweetTextParser(Path.Combine(dataPath, "sentiments.csv"));
     }
 
@@ -28,11 +28,14 @@ public class TweetParser {
             double latitude = double.Parse(coordValues[0]);
             double longitude = double.Parse(coordValues[1]);
 
-            var coord = new Coordinates(latitude, longitude);
+            var tweetCoord = new Coordinates(latitude, longitude);
             DateTime dateTime = DateTime.ParseExact(parts[2], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
             string text = parts[3];
 
-            var tweet = new Tweet(coord, dateTime, text, tweetTextParser);
+            var tweet = new Tweet(tweetCoord, dateTime, text, tweetTextParser);
+
+            var tweetState = stateParser.GetState(tweetCoord);
+            states[tweetState].Add(tweet);
         }
 
         return states;

@@ -1,16 +1,16 @@
 public class Coordinates {
 
-    public double Latitude { get; private set; }
-    public double Longtitude { get; private set; }
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
 
     public Coordinates() {}
 
     public Coordinates(double latitude, double longtitude) {
         Latitude = latitude;
-        Longtitude = longtitude;
+        Longitude = longtitude;
     }
 
     public override string ToString() {
-        return $"[{Latitude}, {Longtitude}]";
+        return $"[{Latitude}, {Longitude}]";
     }
 }

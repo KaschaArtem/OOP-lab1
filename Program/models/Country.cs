@@ -64,10 +64,21 @@ public class Country {
         States = states;
     }
 
+    public double GetStateValue(USAStateName state) {
+        double totalWeight = 0.0;
+        int count = States[state].Count;
+        if (count == 0)
+            count = 1;
+        foreach (var tweet in States[state])
+            totalWeight += tweet.Weight;
+        return Math.Round(totalWeight / count, 3);
+    }
+
     public override string ToString() {
         var str = new StringBuilder();
         foreach (var kvp in States) {
             str.AppendLine(kvp.Key.ToString());
+            str.AppendLine(GetStateValue(kvp.Key).ToString());
             foreach (var tweet in kvp.Value)
                 str.AppendLine(tweet.ToString());
         }

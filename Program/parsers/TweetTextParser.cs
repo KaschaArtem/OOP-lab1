@@ -5,10 +5,10 @@ public class TweetTextParser {
     private Dictionary<string, double> sentiments;
 
     public TweetTextParser(string sentimentsFile) {
-        sentiments = ParseSentimentFile(sentimentsFile);
+        sentiments = ParseSentimentsFile(sentimentsFile);
     }
 
-    private Dictionary<string, double> ParseSentimentFile(string sentimentsFile) {
+    private Dictionary<string, double> ParseSentimentsFile(string sentimentsFile) {
         var sentiments = new Dictionary<string, double>();
 
         foreach (var line in File.ReadLines(sentimentsFile)) {
@@ -60,6 +60,6 @@ public class TweetTextParser {
         if (count == 0)
             count = 1;
 
-        return totalWeight / count;
+        return Math.Round(totalWeight / count, 3);
     }
 }
