@@ -8,19 +8,19 @@ public class Tweet {
 
     public Tweet() {}
 
-    public Tweet(Coordinates coords, DateTime date, string text) {
+    public Tweet(Coordinates coords, DateTime date, string text, TweetTextParser tweetTextParser) {
         Coords = coords;
         Date = date;
         Text = text;
 
-        Weight = CountTweetWeight();
+        Weight = CountTweetWeight(tweetTextParser);
     }
-    
-    private double CountTweetWeight() {
-        return 0.0;
+
+    private double CountTweetWeight(TweetTextParser tweetTextParser) {
+        return tweetTextParser.GetWeight(Text);
     }
 
     public override string ToString() {
-        return $"{Coords.ToString()} {Date.ToString()} {Text}";
+        return $"{Coords.ToString()} {Date.ToString()} {Text} ({Weight})";
     }
 }

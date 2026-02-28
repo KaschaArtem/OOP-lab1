@@ -5,13 +5,13 @@ public class TweetParser {
     private string DataPath = String.Empty;
 
     private string StatesFile = String.Empty;
-    private string SentimentsFile = String.Empty;
+    private TweetTextParser tweetTextParser;
 
     public TweetParser(string dataPath) {
         DataPath = dataPath;
 
         StatesFile = Path.Combine(dataPath, "States.json");
-        SentimentsFile = Path.Combine(dataPath, "Sentiments.csv");
+        tweetTextParser = new TweetTextParser(Path.Combine(dataPath, "sentiments.csv"));
     }
 
     public Dictionary<USAStateName, List<Tweet>> GetStatesByTopic(string topic) {
@@ -32,7 +32,7 @@ public class TweetParser {
             DateTime dateTime = DateTime.ParseExact(parts[2], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
             string text = parts[3];
 
-            var tweet = new Tweet(coord, dateTime, text);
+            var tweet = new Tweet(coord, dateTime, text, tweetTextParser);
         }
 
         return states;
