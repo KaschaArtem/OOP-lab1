@@ -1,6 +1,4 @@
-﻿using System;
-
-class Program {
+﻿class Program {
     static void Main(string[] args) {
 
         string GetDataPath() {
@@ -52,13 +50,13 @@ class Program {
         }
 
         string dataPath = GetDataPath();
-        var topicFile = GetTopicFile(dataPath);
 
-        if (topicFile == String.Empty)
+        var topic = GetTopicFile(dataPath);
+        if (topic == String.Empty)
             return;
 
         var parser = new TweetParser(dataPath);
-        var country = new Country(parser.GetStatesByTopicFile(topicFile));
+        var country = new Country(parser.GetStatesByTopic(topic));
 
     }
 }

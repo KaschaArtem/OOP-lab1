@@ -1,15 +1,14 @@
 public class Tweet {
 
     public Coordinates Coords { get; private set; } = new();
-    public string Date { get; private set; } = String.Empty;
-    public string Time { get; private set; } = String.Empty;
+    public DateTime Date { get; private set; } = new();
     public string Text { get; private set; } = String.Empty;
 
     public double Weight { get; private set; }
 
     public Tweet() {}
 
-    public Tweet(Coordinates coords, string date, string text) {
+    public Tweet(Coordinates coords, DateTime date, string text) {
         Coords = coords;
         Date = date;
         Text = text;
@@ -22,6 +21,6 @@ public class Tweet {
     }
 
     public override string ToString() {
-        return $"{Coords.ToString()} {Date} {Time} {Text}";
+        return $"{Coords.ToString()} {Date.ToString()} {Text}";
     }
 }
