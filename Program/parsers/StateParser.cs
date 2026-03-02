@@ -78,7 +78,7 @@ public class StateParser {
         return degrees * Math.PI / 180.0;
     }
 
-    public USAStateName GetState(Coordinates tweetCoordinates) {
+    public USAStateName GetStateName(Coordinates tweetCoordinates) {
         USAStateName closestState = default;
 
         double minDistance = double.MaxValue;

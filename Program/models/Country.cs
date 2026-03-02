@@ -56,31 +56,23 @@ public enum USAStateName
 
 public class Country {
 
-    public Dictionary<USAStateName, List<Tweet>> States { get; private set; } = new();
+    public Dictionary<USAStateName, State> States { get; private set; } = new();
 
     public Country() {}
 
-    public Country(Dictionary<USAStateName, List<Tweet>> states) {
+    public Country(Dictionary<USAStateName, State> states) {
         States = states;
     }
 
     public double GetStateValue(USAStateName state) {
-        double totalWeight = 0.0;
-        int count = States[state].Count;
-        if (count == 0)
-            count = 1;
-        foreach (var tweet in States[state])
-            totalWeight += tweet.Weight;
-        return Math.Round(totalWeight / count, 3);
+        return States[state].Weight;
     }
 
     public override string ToString() {
         var str = new StringBuilder();
         foreach (var kvp in States) {
             str.AppendLine(kvp.Key.ToString());
-            str.AppendLine(GetStateValue(kvp.Key).ToString());
-            foreach (var tweet in kvp.Value)
-                str.AppendLine(tweet.ToString());
+            str.AppendLine(kvp.Value.ToString());
         }
         return str.ToString();
     }

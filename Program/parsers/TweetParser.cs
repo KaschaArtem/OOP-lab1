@@ -14,10 +14,10 @@ public class TweetParser {
         tweetTextParser = new TweetTextParser(Path.Combine(dataPath, "sentiments.csv"));
     }
 
-    public Dictionary<USAStateName, List<Tweet>> GetStatesByTopic(string topic) {
-        Dictionary<USAStateName, List<Tweet>> states =
+    public Dictionary<USAStateName, State> GetStatesByTopic(string topic) {
+        Dictionary<USAStateName, State> states =
             Enum.GetValues<USAStateName>()
-                .ToDictionary(state => state, state => new List<Tweet>());
+                .ToDictionary(state => state, state => new State());
         string topicFile = Path.Combine(DataPath, topic);
 
         foreach (var line in File.ReadLines(topicFile)) {
@@ -34,8 +34,8 @@ public class TweetParser {
 
             var tweet = new Tweet(tweetCoord, dateTime, text, tweetTextParser);
 
-            var tweetState = stateParser.GetState(tweetCoord);
-            states[tweetState].Add(tweet);
+            var tweetStateName = stateParser.GetStateName(tweetCoord);
+            states[tweetStateName].AddTweet(tweet);
         }
 
         return states;
