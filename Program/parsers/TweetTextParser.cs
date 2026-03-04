@@ -25,41 +25,35 @@ public class TweetTextParser {
     }
 
     public double? GetWeight(string text) {
-        double? totalWeight = 0.0;
+        const int MaxGramSize = 4;
+
+        double totalWeight = 0.0;
         int count = 0;
 
         text = text.ToLowerInvariant();
-        var tokens = Regex.Matches(text, @"\b[\w\-]+\b");
+        var tokens = Regex.Matches(
+            Regex.Replace(text, @"[^\w\s]", ""),
+            @"\b\w+\b"
+        ).Select(match => match.Value).ToList();
 
-        for (int i = 0; i < tokens.Count; i++) {
-            string one = tokens[i].Value;
-            string two = String.Empty;
-            string three = String.Empty;
+        for (int i = 0; i < tokens.Count; i++)
+            for (int size = MaxGramSize; size >= 1; size--) {
+                if (i + size > tokens.Count)
+                    continue;
 
-            if (i + 1 < tokens.Count)
-                two = one + " " + tokens[i + 1].Value;
-            if (i + 2 < tokens.Count)
-                three = one + " " + tokens[i + 1].Value + " " + tokens[i + 2].Value;
+                string phrase = string.Join(" ", tokens.Skip(i).Take(size));
 
-            if (three != String.Empty && sentiments.TryGetValue(three, out double weight3)) {
-                totalWeight += weight3;
-                count++;
-                i += 2;
+                if (sentiments.TryGetValue(phrase, out double weight)) {
+                    totalWeight += weight;
+                    count++;
+                    i += size - 1;
+                    break;
+                }
             }
-            else if (two != String.Empty && sentiments.TryGetValue(two, out double weight2)) {
-                totalWeight += weight2;
-                count++;
-                i += 1;
-            }
-            else if (sentiments.TryGetValue(one, out double weight1)) {
-                totalWeight += weight1;
-                count++;
-            }
-        }
 
         if (count == 0)
             return null;
 
-        return Math.Round(totalWeight.Value / count, 3);
+        return Math.Round(totalWeight / count, 3);
     }
 }
