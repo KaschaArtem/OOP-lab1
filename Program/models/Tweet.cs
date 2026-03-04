@@ -4,7 +4,7 @@ public class Tweet {
     public DateTime Date { get; private set; } = new();
     public string Text { get; private set; } = String.Empty;
 
-    public double Weight { get; private set; }
+    public double? Weight { get; private set; } = null;
 
     public Tweet() {}
 
@@ -16,7 +16,7 @@ public class Tweet {
         Weight = CountTweetWeight(tweetTextParser);
     }
 
-    private double CountTweetWeight(TweetTextParser tweetTextParser) {
+    private double? CountTweetWeight(TweetTextParser tweetTextParser) {
         return tweetTextParser.GetWeight(Text);
     }
 

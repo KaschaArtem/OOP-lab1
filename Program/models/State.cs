@@ -13,11 +13,15 @@ public class State {
     public double Weight {
         get {
             double totalWeight = 0.0;
-            int count = Tweets.Count;
+            int count = 0;
+            foreach (var tweet in Tweets) {
+                if (tweet.Weight == null)
+                    continue;
+                totalWeight += tweet.Weight.Value;
+                count++;
+            }
             if (count == 0)
                 count = 1;
-            foreach (var tweet in Tweets)
-                totalWeight += tweet.Weight;
             return Math.Round(totalWeight / count, 3);
         }
     }

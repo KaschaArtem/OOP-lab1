@@ -24,8 +24,8 @@ public class TweetTextParser {
         return sentiments;
     }
 
-    public double GetWeight(string text) {
-        double totalWeight = 0.0;
+    public double? GetWeight(string text) {
+        double? totalWeight = 0.0;
         int count = 0;
 
         text = text.ToLowerInvariant();
@@ -58,8 +58,8 @@ public class TweetTextParser {
         }
 
         if (count == 0)
-            count = 1;
+            return null;
 
-        return Math.Round(totalWeight / count, 3);
+        return Math.Round(totalWeight.Value / count, 3);
     }
 }
