@@ -58,7 +58,7 @@ public class Country {
 
     public Dictionary<USAStateName, State> States { get; private set; } = new();
 
-    public Country() {}
+    public Country() { }
 
     public Country(Dictionary<USAStateName, State> states) {
         States = states;

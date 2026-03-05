@@ -58,6 +58,8 @@
         var parser = new TweetParser(dataPath);
         var country = new Country(parser.GetStatesByTopic(topic));
 
+        var drawer = new CountryDrawer(dataPath);
+
         Console.WriteLine(country);
     }
 }
