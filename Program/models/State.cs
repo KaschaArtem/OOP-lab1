@@ -26,6 +26,12 @@ public class State {
         }
     }
 
+    public bool IsEmpty() {
+        if (Tweets.Count == 0)
+            return true;
+        return false;
+    }
+
     public void AddTweet(Tweet tweet) {
         Tweets.Add(tweet);
     }

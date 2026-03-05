@@ -2,3 +2,4 @@ bin/
 Program/obj/
 
 .editorconfig
+data/map.png

@@ -1,4 +1,4 @@
-using System.Drawing;
+using SkiaSharp;
 
 public class ColorPicker {
 
@@ -19,7 +19,22 @@ public class ColorPicker {
         }
     }
 
-    public Color GetColor(double weight) {
-        return Color.White;
+    public SKColor GetColor(State state) {
+        if (state.IsEmpty())
+            return new SKColor(191, 191, 191);
+
+        var weight = state.Weight;
+        double n = (weight - MinWeight) / (MaxWeight - MinWeight);
+        if (n < 0.5)
+            return new SKColor(
+                255,
+                (byte)(255 * (1 - n)),
+                (byte)(255 * (1 - n))
+            );
+        return new SKColor(
+            (byte)(255 * (1 - n)),
+            255,
+            (byte)(255 * (1 - n))
+        );
     }
 }

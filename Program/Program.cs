@@ -59,7 +59,6 @@
         var country = new Country(parser.GetStatesByTopic(topic));
 
         var drawer = new CountryDrawer(dataPath);
-
-        Console.WriteLine(country);
+        drawer.DrawCountry(country);
     }
 }
