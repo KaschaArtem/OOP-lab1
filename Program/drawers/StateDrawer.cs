@@ -3,15 +3,16 @@ using System.Text.Json;
 
 public class StateDrawer {
 
-    private const double MinLon = -179;
-    private const double MaxLon = -66;
-    private const double MinLat = 18;
-    private const double MaxLat = 72;
+    private double MinLon;
+    private double MaxLon;
+    private double MinLat;
+    private double MaxLat;
 
     private Dictionary<USAStateName, List<List<Coordinates>>> polygons;
 
     public StateDrawer(string statesFile) {
         polygons = ParseStatesFile(statesFile);
+        CalculateBounds();
     }
 
     private Dictionary<USAStateName, List<List<Coordinates>>> ParseStatesFile(string statesFile) {
@@ -22,7 +23,7 @@ public class StateDrawer {
 
         foreach (var stateProp in doc.RootElement.EnumerateObject()) {
             if (!Enum.TryParse<USAStateName>(stateProp.Name, out var state))
-            continue;
+                continue;
 
             var statePolygons = new List<List<Coordinates>>();
             foreach (var polygonElement in stateProp.Value.EnumerateArray())
@@ -47,9 +48,55 @@ public class StateDrawer {
         foreach (var point in ring.EnumerateArray()) {
             double lon = point[0].GetDouble();
             double lat = point[1].GetDouble();
+            if (lon > 0)
+                lon -= 360;
             coords.Add(new Coordinates(lat, lon));
         }
         return coords;
+    }
+
+    private void CalculateBounds() {
+        MinLon = double.MaxValue;
+        MaxLon = double.MinValue;
+        MinLat = double.MaxValue;
+        MaxLat = double.MinValue;
+
+
+        foreach (var kvp in polygons) {
+            var state = kvp.Key;
+
+            foreach (var ring in kvp.Value) {
+                foreach (var p in ring) {
+                    var (lon, lat) = Transform(state, p.Longitude, p.Latitude);
+                    if (lon < MinLon) MinLon = lon;
+                    if (lon > MaxLon) MaxLon = lon;
+                    if (lat < MinLat) MinLat = lat;
+                    if (lat > MaxLat) MaxLat = lat;
+                }
+            }
+        }
+
+        double padding = 0.02;
+
+        double lonRange = MaxLon - MinLon;
+        double latRange = MaxLat - MinLat;
+
+        MinLon -= lonRange * padding;
+        MaxLon += lonRange * padding;
+        MinLat -= latRange * padding;
+        MaxLat += latRange * padding;
+    }
+
+    private (double lon, double lat) Transform(USAStateName state, double lon, double lat) {
+        if (state == USAStateName.AK) {
+            lon = lon * 0.3 - 75;
+            lat = lat * 0.4 + 2;
+        }
+        else if (state == USAStateName.HI) {
+            lon += 50;
+            lat += 6;
+        }
+        return (lon, lat);
     }
 
     public void DrawState(SKColor color, USAStateName state, SKCanvas canvas, int width, int height)
@@ -95,16 +142,20 @@ public class StateDrawer {
                 continue;
 
             var path = new SKPath();
-            path.MoveTo(ScaleX(ring[0].Longitude), ScaleY(ring[0].Latitude));
+            var (lon0, lat0) = Transform(state, ring[0].Longitude, ring[0].Latitude);
+            path.MoveTo(ScaleX(lon0), ScaleY(lat0));
 
             foreach (var p in ring) {
-                sumLon += p.Longitude;
-                sumLat += p.Latitude;
+                var (lon, lat) = Transform(state, p.Longitude, p.Latitude);
+                sumLon += lon;
+                sumLat += lat;
                 count++;
             }
 
-            for (int i = 1; i < ring.Count; i++)
-                path.LineTo(ScaleX(ring[i].Longitude), ScaleY(ring[i].Latitude));
+            for (int i = 1; i < ring.Count; i++) {
+                var (lon, lat) = Transform(state, ring[i].Longitude, ring[i].Latitude);
+                path.LineTo(ScaleX(lon), ScaleY(lat));
+            }
 
             path.Close();
             canvas.DrawPath(path, fillPaint);
